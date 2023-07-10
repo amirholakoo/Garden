@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Garden Data</title>
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+</head>
+<body>
+    <h1>Garden Data</h1>
+
+    <h2>Soil Data</h2>
+    <div id="soil"></div>
+
+    <h2>Weather Data</h2>
+    <div id="weather"></div>
+
+    <h2>Light Data</h2>
+    <div id="light"></div>
+
+    <script>
+        var soil_data = {{ plot1|safe }};
+        Plotly.newPlot('soil', soil_data);
+
+        var weather_data = {{ plot2|safe }};
+        Plotly.newPlot('weather', weather_data);
+
+        var light_data = {{ plot3|safe }};
+        Plotly.newPlot('light', light_data);
+    </script>
+</body>
+</html>
