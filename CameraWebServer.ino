@@ -8,20 +8,20 @@
 //
 
 // Select camera model
-#define CAMERA_MODEL_WROVER_KIT // Has PSRAM
+//#define CAMERA_MODEL_WROVER_KIT // Has PSRAM
 //#define CAMERA_MODEL_ESP_EYE // Has PSRAM
 //#define CAMERA_MODEL_M5STACK_PSRAM // Has PSRAM
 //#define CAMERA_MODEL_M5STACK_V2_PSRAM // M5Camera version B Has PSRAM
 //#define CAMERA_MODEL_M5STACK_WIDE // Has PSRAM
 //#define CAMERA_MODEL_M5STACK_ESP32CAM // No PSRAM
 //#define CAMERA_MODEL_M5STACK_UNITCAM // No PSRAM
-//#define CAMERA_MODEL_AI_THINKER // Has PSRAM
+#define CAMERA_MODEL_AI_THINKER // Has PSRAM
 //#define CAMERA_MODEL_TTGO_T_JOURNAL // No PSRAM
 
 #include "camera_pins.h"
 
-const char* ssid = "VPN1";
-const char* password = "09126141426";
+const char* ssid = "XXX";
+const char* password = "XXX";
 
 void startCameraServer();
 
