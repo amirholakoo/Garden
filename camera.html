@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Garden Data</title>
+    <style>
+        /* Add some basic styling */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f0f0f0;
+        }
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        img {
+            max-width: 100%;
+            height: auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Camera: {{ip_address}}</h1>
+
+        <!-- Display the graphs -->
+        {% for filename in filenames %}
+        <img src="/static/{{filename}}" alt="{{filename}}">
+        {% endfor %}
+    </div>
+</body>
+</html>

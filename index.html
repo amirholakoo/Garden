@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Garden Data</title>
+    <style>
+        /* Add some basic styling */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f0f0f0;
+        }
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        a {
+            color: #337ab7;
+            text-decoration: none;
+        }
+        a:hover {
+            color: #23527c;
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>All Cameras</h1>
+
+        <!-- Display the list of all cameras -->
+        <ul>
+        {% for ip_address in ip_addresses %}
+            <li><a href="/camera/{{ip_address}}">{{ip_address}}</a></li>
+        {% endfor %}
+        </ul>
+    </div>
+</body>
+</html>

@@ -2,13 +2,25 @@ from flask import Flask, render_template
 import pandas as pd
 import matplotlib.pyplot as plt
 import os
+import glob
 
-app = Flask(__name__)
+app = Flask(__name__, static_url_path='/static')
 
 @app.route('/')
-def home():
-    #csv_file = 'data/192_168_1_102_soil_data.csv'  # Path to your CSV file
-    csv_file = 'data/192_168_1_167_soil_data.csv'  # Path to your CSV file
+def index():
+    # Find all CSV files in the data directory
+    csv_files = glob.glob('data/*_soil_data.csv')
+
+    # Extract the IP addresses from the file names
+    ip_addresses = [os.path.basename(file).replace('_soil_data.csv', '') for file in csv_files]
+
+    # Render the index page
+    return render_template('index.html', ip_addresses=ip_addresses)
+
+
+@app.route('/camera/<ip_address>')
+def camera(ip_address):
+    csv_file = f'data/{ip_address}_soil_data.csv'  # Path to your CSV file
 
     # Check if the file exists
     if not os.path.isfile(csv_file):
@@ -18,16 +30,14 @@ def home():
     data = pd.read_csv(csv_file)
 
     # Generate the graphs and save them as images
-    generate_graph(data, 'num_dry_pixels', 'Number of Dry Pixels', 'dry_pixels.png')
-    generate_graph(data, 'num_wet_pixels', 'Number of Wet Pixels', 'wet_pixels.png')
-    generate_graph(data, 'num_sprout_pixels', 'Number of Sprout Pixels', 'sprout_pixels.png')
-    generate_graph(data, 'temperature', 'Temperature', 'temperature.png')
-    generate_graph(data, 'humidity', 'Humidity', 'humidity.png')
-    generate_graph(data, 'pressure', 'Pressure', 'pressure.png')
-    generate_graph(data, 'light_level', 'Light Level', 'light_level.png')
+    graph_types = ['num_dry_pixels', 'num_wet_pixels', 'num_sprout_pixels', 'temperature', 'humidity', 'pressure', 'light_level']
+    graph_titles = ['Number of Dry Pixels', 'Number of Wet Pixels', 'Number of Sprout Pixels', 'Temperature', 'Humidity', 'Pressure', 'Light Level']
 
-    # Render the home page
-    return render_template('home.html')
+    filenames = [generate_graph(data, graph_type, title, f"{ip_address}_{graph_type}.png") for graph_type, title in zip(graph_types, graph_titles)]
+
+    # Render the camera page
+    return render_template('camera.html', filenames=filenames, ip_address=ip_address)
+
 
 def generate_graph(data, column, title, filename):
     plt.figure()
@@ -35,6 +45,7 @@ def generate_graph(data, column, title, filename):
     plt.title(title)
     plt.grid(True)
     plt.savefig('static/' + filename)  # Save the graph as an image in the static folder
+    return filename
 
 if __name__ == '__main__':
     app.run(debug=True)
