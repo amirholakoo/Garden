@@ -36,6 +36,10 @@
         {% for filename in filenames %}
         <img src="/static/{{filename}}" alt="{{filename}}">
         {% endfor %}
+        
+        <h2>Log Information</h2>
+        <pre>{{ log_info }}</pre>
+        
     </div>
 </body>
 
