@@ -3,6 +3,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import os
 import glob
+from shutil import copyfile
 
 app = Flask(__name__, static_url_path='/static')
 
@@ -35,10 +36,32 @@ def camera(ip_address):
 
     filenames = [generate_graph(data, graph_type, title, f"{ip_address}_{graph_type}.png") for graph_type, title in zip(graph_types, graph_titles)]
 
+    # Get latest image 
+    camera_image_folder = f'images/{ip_address.replace(".", "_")}'
+    latest_image_file = latest_file_in_dir(camera_image_folder, 'static')
+
+
     # Render the camera page
-    return render_template('camera.html', filenames=filenames, ip_address=ip_address)
+    return render_template('camera.html', filenames=filenames, ip_address=ip_address, latest_image=latest_image_file)
 
+def latest_file_in_dir(dir, static_dir):
+    files = glob.glob(dir + '/*')
+    if files:
+        latest_file = max(files, key=os.path.getctime)
+        latest_filename = latest_file.split('/')[-1]  # get file name only
+        pure_filename = latest_filename.split("\\")[-1]  # get only the filename without IP
 
+        # Create static directory if not exists
+        if not os.path.exists(static_dir):
+            os.makedirs(static_dir)
+
+        # Copy file to static folder
+        copyfile(latest_file, f"{static_dir}/{pure_filename}")
+
+        return pure_filename
+    else:
+        return None
+    
 def generate_graph(data, column, title, filename):
     plt.figure()
     plt.plot(data['timestamp'], data[column])

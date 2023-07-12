@@ -25,10 +25,18 @@
     <div class="container">
         <h1>Camera: {{ip_address}}</h1>
 
+        <!-- Display the latest image -->
+        {% if latest_image %}
+        <img src="/static/{{latest_image}}" alt="Latest Camera Image">
+        {% else %}
+        <p>No latest image available</p>
+        {% endif %}
+
         <!-- Display the graphs -->
         {% for filename in filenames %}
         <img src="/static/{{filename}}" alt="{{filename}}">
         {% endfor %}
     </div>
 </body>
+
 </html>
