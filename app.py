@@ -4,11 +4,17 @@ import matplotlib.pyplot as plt
 import os
 import glob
 from shutil import copyfile
+from datetime import datetime, timedelta
+
 
 app = Flask(__name__, static_url_path='/static')
 
 @app.route('/')
 def index():
+    
+    # Read the log file
+    log_info = read_last_24_hours('monitoring.log')
+        
     # Find all CSV files in the data directory
     csv_files = glob.glob('data/*_soil_data.csv')
 
@@ -16,7 +22,7 @@ def index():
     ip_addresses = [os.path.basename(file).replace('_soil_data.csv', '') for file in csv_files]
 
     # Render the index page
-    return render_template('index.html', ip_addresses=ip_addresses)
+    return render_template('index.html', ip_addresses=ip_addresses, log_info=log_info)
 
 
 @app.route('/camera/<ip_address>')
@@ -39,10 +45,14 @@ def camera(ip_address):
     # Get latest image 
     camera_image_folder = f'images/{ip_address.replace(".", "_")}'
     latest_image_file = latest_file_in_dir(camera_image_folder, 'static')
+    
+    # Read the log file
+    log_info = read_last_24_hours('monitoring.log')
+
 
 
     # Render the camera page
-    return render_template('camera.html', filenames=filenames, ip_address=ip_address, latest_image=latest_image_file)
+    return render_template('camera.html', filenames=filenames, ip_address=ip_address, latest_image=latest_image_file, log_info=log_info)
 
 def latest_file_in_dir(dir, static_dir):
     files = glob.glob(dir + '/*')
@@ -61,7 +71,18 @@ def latest_file_in_dir(dir, static_dir):
         return pure_filename
     else:
         return None
-    
+def read_last_24_hours(filename):
+    with open(filename, 'r') as f:
+        lines = f.readlines()
+
+    # Get the current time
+    now = datetime.now()
+
+    # Filter the lines to include only the last 24 hours
+    lines_last_24_hours = [line for line in lines if now - datetime.strptime(line.split()[0] + ' ' + line.split()[1], '%Y-%m-%d %H:%M:%S,%f') <= timedelta(hours=24)]
+
+    return ''.join(lines_last_24_hours)
+
 def generate_graph(data, column, title, filename):
     plt.figure()
     plt.plot(data['timestamp'], data[column])
